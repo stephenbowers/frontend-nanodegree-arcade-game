@@ -6,8 +6,17 @@ let Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.speed = Math.floor(Math.random() * 100) + 10;
     this.x = 0;
-    this.y = Math.floor(Math.random() * Math.floor(300));  // Random number, make it fall in 3 categories
+    this.lane = Math.floor(Math.random() * 3) + 1;
+    if (this.lane === 1) {
+        this.y = 60;
+    } else if (this.lane === 2) {
+        this.y = 145;
+    } else {
+        this.y = 230;
+    }
+    
 };
 
 // Update the enemy's position, required method for game
@@ -17,8 +26,8 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
-        this.x += (10 * dt); // Make speed random, try 3 diff speed categories
-    // Start over when off screen
+    this.x += (this.speed * dt);
+    // TODO: Start over when off screen
     
 };
 
@@ -37,8 +46,8 @@ let Player = function() {
 };
 
 Player.prototype.update = function(dt) {
-    // Add rules for collision, going back to start
-    // Add rules for not leaving the screen
+    // TODO: Add rules for collision, going back to start
+    // TODO: Add rules for not leaving the screen
 };
 
 Player.prototype.render = function() {
