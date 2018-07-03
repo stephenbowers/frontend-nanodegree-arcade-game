@@ -33,11 +33,12 @@ Enemy.prototype.render = function() {
 let Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 200; // Specific number
-    this.y = 440; // Specific number
+    this.y = 375; // Specific number
 };
 
 Player.prototype.update = function(dt) {
-    
+    // Add rules for collision, going back to start
+    // Add rules for not leaving the screen
 };
 
 Player.prototype.render = function() {
@@ -47,20 +48,16 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch(key) {
         case 'left':
-            // Movement
-            this.x -= 50;
+            this.x -= 100;
             break;
         case 'up':
-            // Movement
-            this.y -= 50;
+            this.y -= 80;
             break;
         case 'right':
-            // Movement
-            this.x += 50;
+            this.x += 100;
             break;
         case 'down':
-            // Movement
-            this.y += 50;
+            this.y += 80;
             break;
     }
 };
