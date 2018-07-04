@@ -16,7 +16,6 @@ let Enemy = function() {
     } else {
         this.y = 230;
     }
-    
 };
 
 // Update the enemy's position, required method for game
@@ -27,7 +26,20 @@ Enemy.prototype.update = function(dt) {
     // all computers.
 
     this.x += (this.speed * dt);
+    
     // TODO: Start over when off screen
+    if (this.x > 505) {
+        this.speed = Math.floor(Math.random() * 100) + 10;
+        this.x = 0;
+        this.lane = Math.floor(Math.random() * 3) + 1;
+        if (this.lane === 1) {
+            this.y = 60;
+        } else if (this.lane === 2) {
+            this.y = 145;
+        } else {
+            this.y = 230;
+        }
+    }
     
 };
 
@@ -46,9 +58,26 @@ let Player = function() {
 };
 
 Player.prototype.update = function(dt) {
-    // TODO: Add rules for collision, & resetting game
-    // TODO: Add rules for not leaving the screen
-    // TODO: Something happens when they win
+    // Collision Logic
+    for (enemy of allEnemies) {
+        if (this.x >= enemy.x - 55 && this.x <= enemy.x + 55) { // Same X value
+            if (this.y >= enemy.y - 15 && this.y <= enemy.y + 15) { // Same Y value
+                console.log("You lost!)");
+                // Reset player position
+                this.x = 200;
+                this.y = 375;
+            }
+        }
+    }
+
+    // Win Condition
+    if (this.y < 0) {
+        console.log("You won!");
+        // Reset player position
+        this.x = 200;
+        this.y = 375;
+        // TODO:  Add something that happens when you win
+    }
 };
 
 Player.prototype.render = function() {
