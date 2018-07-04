@@ -6,16 +6,7 @@ let Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.speed = Math.floor(Math.random() * 100) + 10;
-    this.x = 0;
-    this.lane = Math.floor(Math.random() * 3) + 1;
-    if (this.lane === 1) {
-        this.y = 60;
-    } else if (this.lane === 2) {
-        this.y = 145;
-    } else {
-        this.y = 230;
-    }
+    this.setPos();
 };
 
 // Update the enemy's position, required method for game
@@ -29,18 +20,8 @@ Enemy.prototype.update = function(dt) {
     
     // TODO: Start over when off screen
     if (this.x > 505) {
-        this.speed = Math.floor(Math.random() * 100) + 10;
-        this.x = 0;
-        this.lane = Math.floor(Math.random() * 3) + 1;
-        if (this.lane === 1) {
-            this.y = 60;
-        } else if (this.lane === 2) {
-            this.y = 145;
-        } else {
-            this.y = 230;
-        }
+        this.setPos();
     }
-    
 };
 
 // Draw the enemy on the screen, required method for game
@@ -48,24 +29,36 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Reset enemy position
+Enemy.prototype.setPos = function() {
+    this.speed = Math.floor(Math.random() * 100) + 10;
+    this.x = 0;
+    this.lane = Math.floor(Math.random() * 3) + 1;
+    if (this.lane === 1) {
+        this.y = 60;
+    } else if (this.lane === 2) {
+        this.y = 145;
+    } else {
+        this.y = 230;
+    }
+}
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 let Player = function() {
     this.sprite = 'images/char-boy.png';
-    this.x = 200; // Specific number
-    this.y = 375; // Specific number
+    this.setPlayerPos();
 };
 
 Player.prototype.update = function(dt) {
     // Collision Logic
     for (enemy of allEnemies) {
-        if (this.x >= enemy.x - 55 && this.x <= enemy.x + 55) { // Same X value
-            if (this.y >= enemy.y - 15 && this.y <= enemy.y + 15) { // Same Y value
-                console.log("You lost!)");
+        if (this.x >= enemy.x - 55 && this.x <= enemy.x + 55) {
+            if (this.y >= enemy.y - 15 && this.y <= enemy.y + 15) {
+                console.log("You lost!");
                 // Reset player position
-                this.x = 200;
-                this.y = 375;
+                this.setPlayerPos();
             }
         }
     }
@@ -74,8 +67,7 @@ Player.prototype.update = function(dt) {
     if (this.y < 0) {
         console.log("You won!");
         // Reset player position
-        this.x = 200;
-        this.y = 375;
+        this.setPlayerPos();
         // TODO:  Add something that happens when you win
     }
 };
@@ -83,6 +75,11 @@ Player.prototype.update = function(dt) {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+
+Player.prototype.setPlayerPos = function() {
+    this.x = 200;
+    this.y = 375;
+}
 
 Player.prototype.handleInput = function(key) {
     switch(key) {
