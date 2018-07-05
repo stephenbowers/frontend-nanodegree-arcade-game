@@ -1,3 +1,8 @@
 body {
     text-align: center;
 }
+
+#title {
+    font-family: 'Russo One', sans-serif;
+    margin-bottom: 0;
+}
