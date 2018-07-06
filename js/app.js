@@ -15,10 +15,9 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-
     this.x += (this.speed * dt);
     
-    // TODO: Start over when off screen
+    // Reset when off screen
     if (this.x > 505) {
         this.setPos();
     }
@@ -29,10 +28,10 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Reset enemy position
+// Set/Reset enemy position
 Enemy.prototype.setPos = function() {
     this.speed = Math.floor(Math.random() * 100) + 10;
-    this.x = 0;
+    this.x = -60;
     this.lane = Math.floor(Math.random() * 3) + 1;
     if (this.lane === 1) {
         this.y = 60;
@@ -51,26 +50,33 @@ let Player = function() {
     this.setPlayerPos();
 };
 
-Player.prototype.update = function(dt) {
-    // Collision Logic
+Player.prototype.update = function() {
+    this.checkCollision();
+    this.checkWin();
+};
+
+Player.prototype.checkCollision = function() {
     for (enemy of allEnemies) {
         if (this.x >= enemy.x - 55 && this.x <= enemy.x + 55) {
             if (this.y >= enemy.y - 15 && this.y <= enemy.y + 15) {
-                console.log("You lost!");
                 // Reset player position
                 this.setPlayerPos();
+
+                // Reset Gem Tracking
+                gemCount = 0;
+                gemCounter.innerHTML = gemCount;
             }
         }
     }
+}
 
-    // Win Condition
+Player.prototype.checkWin = function() {
     if (this.y < 0) {
-        console.log("You won!");
         // Reset player position
         this.setPlayerPos();
-        // TODO:  Add something that happens when you win
+        // TODO:  ***Add something that happens when you win***
     }
-};
+}
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -106,6 +112,71 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+let Gem = function() {
+    this.sprite = 'images/gem orange.png';
+    this.setGemPos();
+};
+
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), (this.x + 25), (this.y + 80), 50.5, 85.5);
+};
+
+Gem.prototype.setGemPos = function() {
+    this.lane = Math.floor(Math.random() * 3) + 1;
+    switch(this.lane) {
+        case 1:
+            this.y = 55;
+            break;
+        case 2:
+            this.y = 135;
+            break;
+        case 3:
+            this.y = 215;
+            break;
+    }
+
+    this.row = Math.floor(Math.random() * 5) + 1;
+    switch(this.row) {
+        case 1:
+            this.x = 0;
+            break;
+        case 2:
+            this.x = 100;
+            break;
+        case 3:
+            this.x = 200;
+            break;
+        case 4:
+            this.x = 300;
+            break;
+        case 5:
+            this.x = 400;
+            break;
+    }
+}
+
+Gem.prototype.update = function() {
+    this.isFound();
+}
+
+Gem.prototype.isFound = function() {
+    if (this.x === player.x && this.y === player.y) {
+        // Gem disappears
+        this.x = -100;
+        
+        // Update Gem counter
+        gemCount += 1;
+        gemCounter.innerHTML = gemCount;
+
+        // Call new gem
+        this.setGemPos();
+    }
+}
+
+let gemCount = 0;
+const gemCounter = document.getElementById('gem-count');
+
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -115,6 +186,11 @@ let enemy3 = new Enemy();
 let allEnemies = [enemy1, enemy2, enemy3];
 
 let player = new Player();
+
+let gem1 = new Gem();
+let gem2 = new Gem();
+let gem3 = new Gem();
+let allGems = [gem1, gem2, gem3];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
