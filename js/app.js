@@ -45,20 +45,26 @@ Enemy.prototype.setPos = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+
+// Our player
 let Player = function() {
     this.sprite = 'images/char-boy.png';
     this.setPlayerPos();
 };
 
+// Check for collisions and win condition
 Player.prototype.update = function() {
     this.checkCollision();
     this.checkWin();
 };
 
+// Check for collision with enemy objects
 Player.prototype.checkCollision = function() {
     for (enemy of allEnemies) {
         if (this.x >= enemy.x - 55 && this.x <= enemy.x + 55) {
             if (this.y >= enemy.y - 15 && this.y <= enemy.y + 15) {
+                alert("Oh no!  You lost!");
+
                 // Reset player position
                 this.setPlayerPos();
 
@@ -70,23 +76,38 @@ Player.prototype.checkCollision = function() {
     }
 }
 
+// Check for win condition
 Player.prototype.checkWin = function() {
     if (this.y < 0) {
-        // Reset player position
-        this.setPlayerPos();
-        // TODO:  ***Add something that happens when you win***
+        this.won();
     }
 }
 
+// Alert for when player wins
+Player.prototype.won = function() {
+    if (gemCount !== 1) {
+        alert(`You won!  You collected ${gemCount} gems!`);
+    } else {
+        alert(`You won!  You collected ${gemCount} gem!`);
+    }
+    
+    this.setPlayerPos();
+    gemCount = 0;
+    gemCounter.innerHTML = gemCount;
+}
+
+// Draw the player on the screen
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Set player starting position
 Player.prototype.setPlayerPos = function() {
     this.x = 200;
     this.y = 375;
 }
 
+// Controls for player movement
 Player.prototype.handleInput = function(key) {
     switch(key) {
         case 'left':
@@ -112,15 +133,18 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+// Gems the player will be collecting
 let Gem = function() {
     this.sprite = 'images/gem orange.png';
     this.setGemPos();
 };
 
+// Draw the gems on the screen
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), (this.x + 25), (this.y + 80), 50.5, 85.5);
 };
 
+// Set position for gems
 Gem.prototype.setGemPos = function() {
     this.lane = Math.floor(Math.random() * 3) + 1;
     switch(this.lane) {
@@ -155,10 +179,12 @@ Gem.prototype.setGemPos = function() {
     }
 }
 
+// Check if a gem has been found by a player
 Gem.prototype.update = function() {
     this.isFound();
 }
 
+// What happens when a gem has been found
 Gem.prototype.isFound = function() {
     if (this.x === player.x && this.y === player.y) {
         // Gem disappears
@@ -175,6 +201,7 @@ Gem.prototype.isFound = function() {
 
 let gemCount = 0;
 const gemCounter = document.getElementById('gem-count');
+const gemFinalCount = document.getElementById('gem-count-final');
 
 
 // Now instantiate your objects.
